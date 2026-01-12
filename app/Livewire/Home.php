@@ -22,12 +22,20 @@ class Home extends Component
     public $CountActividades;
     public $user;
 
+    public $tipoActividade;
+    public $responsavel;
+    public $descricao;
+    public $user_id;
+
+
+
      public function mount()
     {
-        $this->user = Auth::user();
-        $this->CountServicos = $this->user = Servicos::where('user_id', Auth::id())->count();
-        $this->CountProdutos = $this->user = Produtos::where('user_id', Auth::id())->count();
-        $this->CountClientes = $this->user = Clientes::where('user_id', Auth::id())->count();
+       $this->user = Auth::user(); // mantém o usuário autenticado
+
+    $this->CountServicos = Servicos::where('user_id', Auth::id())->count();
+    $this->CountProdutos = Produtos::where('user_id', Auth::id())->count();
+    $this->CountClientes = Clientes::where('user_id', Auth::id())->count();
     }
 
     public function render()
@@ -40,8 +48,15 @@ class Home extends Component
         return view('components.home', ['CountActividades' => $this->CountActividades])->layout('components.dashboard');
     }
 
-    public function disparar()
+    public function openModal($id)
     {
-        dd("ageu e maio no beck end");
+        $atividade = Actividades::findOrFail($id);
+        $this->tipoActividade = $atividade->tipoActividade;
+        $this->descricao = $atividade->descricao;
+        $this->user_id = $atividade->user_id;
+
+         $this->responsavel = $atividade->user->name ?? 'Sem responsável';
+
+        $this->dispatch('openModal', ['modalId' => 'edite']);
     }
 }

@@ -20,8 +20,8 @@ class Servicos extends Component
     public $preco;
     public $duracao;
     public $tipo_cobranca;
-    public $ativo;
-    public $servicos;
+    public $ativo = true;
+    // public $servicos;
     public $servicoId;
 
     // Modal

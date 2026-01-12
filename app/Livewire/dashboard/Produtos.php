@@ -21,16 +21,30 @@ class Produtos extends Component
     public $preco;
     public $preco_promocional;
     public $stock;
-    public $activo;
+    public $activo = true;
     public $imagem;
     public $clientes = [];
     public $produtos;
+
+    public $nomeModal;
+    public $categoriaModal;
+    public $skuModal;
+    public $descricaoModal;
+    public $cliente_idModal;
+    public $precoModal;
+    public $preco_promocionalModal;
+    public $stockModal;
+    public $activoModal = true;
+    public $imagemModal;
+    public $clientesModal = [];
+    public $produtosModal;
+    public $produtoId;
 
     public function render()
     {
         $this->clientes = Clientes::where('ativo', true)->get();
         $this->produtos = Produto::where('user_id', Auth::id())->get();
-        return view('dashboard.produtos', ['produtos' => $this->produtos, 
+        return view('dashboard.produtos', ['produtos' => $this->produtos,
         'clientes' => $this->clientes,])->layout('components.dashboard');
     }
 
@@ -85,7 +99,7 @@ class Produtos extends Component
         'icon' => 'success',
         ]);
 
-         
+
 
         // Limpar campos
         $this->reset([
@@ -101,5 +115,70 @@ class Produtos extends Component
             'imagem',
             'preco_promocional'
         ]);
+    }
+
+    public function abrirmodal($id)
+    {
+        $produtos = Produto::findOrFail($id);
+
+        $this->produtoId  = $produtos->id;
+        $this->nomeModal = $produtos->nome;
+        $this->categoriaModal = $produtos->categoria;
+        $this->skuModal = $produtos->sku;
+        $this->descricaoModal = $produtos->descricao;
+        $this->cliente_idModal = $produtos->cliente_id;
+        $this->precoModal = $produtos->preco;
+        $this->preco_promocionalModal = $produtos->preco_promocional;
+        $this->stockModal = $produtos->stock;
+        $this->activoModal = $produtos->activo;
+        $this->imagemModal = $produtos->imagem;
+
+        $this->dispatch('openModal', ['modalId' => 'edite']);
+
+    }
+        public function atualizar()
+        {
+            try {
+                $produto = Produto::find($this->produtoId);
+
+                $produto->nome = $this->nomeModal ?? $produto->nome;
+                $produto->categoria = $this->categoriaModal ?? $produto->categoria;
+                $produto->sku = $this->skuModal ?? $produto->sku;
+                $produto->descricao = $this->descricaoModal ?? $produto->descricao;
+                $produto->cliente_id = $this->cliente_idModal ?? $produto->cliente_id;
+                $produto->preco = $this->precoModal ?? $produto->preco;
+                $produto->preco_promocional = $this->preco_promocionalModal ?? $produto->preco_promocional;
+                $produto->stock = $this->stockModal ?? $produto->stock;
+                $produto->activo = $this->activoModal ?? $produto->activo;
+
+                if ($this->imagemModal) {
+                    $imagemPath = $this->imagemModal->store('produtos', 'public');
+                    $produto->imagem = $imagemPath;
+                }
+
+                $produto->save();
+
+                    Actividades::create([
+                        'responsavel' => Auth::id(),
+                        'tipoActividade' => 'Edição',
+                        'descricao' => 'Edição de um Produto'
+                    ]);
+
+
+
+                $this->dispatch('swal', [
+                    'title' => 'Sucesso!',
+                    'text' => 'Produto atualizado com sucesso ',
+                    'icon' => 'success',
+                ]);
+
+            } catch (\Exception $e) {
+                $this->dispatch('swal', [
+                    'title' => 'Erro!',
+                    'text' => 'Ocorreu um erro ao atualizar o produto.',
+                    'icon' => 'error',
+                ]);
+            }
+         $this->dispatch('closeModal', ['modalId' => 'edite']);
     }
 }
