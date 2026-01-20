@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Dashboard' }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="{{ asset('js/app.js') }}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     @livewireStyles
 
     <style>
