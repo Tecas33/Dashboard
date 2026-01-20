@@ -19,7 +19,7 @@ class Register extends Component
 
     public function render()
     {
-        return view('auth.register')->layout('master.home');
+        return view('Auth.register')->layout('master.home');
     }
 
     protected $rules = [
