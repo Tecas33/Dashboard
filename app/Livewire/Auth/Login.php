@@ -13,7 +13,7 @@ class Login extends Component
 
      public function render()
     {
-        return view('auth.login')->layout('master.home');
+        return view('Auth.login')->layout('master.home');
     }
 
     public function login()
