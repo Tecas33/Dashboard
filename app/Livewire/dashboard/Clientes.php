@@ -16,6 +16,7 @@ class Clientes extends Component
 
     // public $clientes;
     public $nome, $email, $telefone, $tipo = 'PF', $documento, $empresa, $endereco, $ativo = true;
+    // public $clientes;
     public $clienteId = null;
     public $nomeModal, $emailModal, $telefoneModal, $tipoModal = 'PF', $documentoModal, $empresaModal, $enderecoModal, $ativoModal = true;
 
