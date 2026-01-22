@@ -12,7 +12,7 @@ class AuthController extends Controller
     // Mostrar formulário de registo
     public function register()
     {
-        return view('auth.register');
+        return view('Auth.register');
     }
 
     // Processar o registo
@@ -43,7 +43,7 @@ class AuthController extends Controller
     // Mostrar formulário de login
     public function login()
     {
-        return view('auth.login');
+        return view('Auth.login');
     }
 
     // Processar o login
