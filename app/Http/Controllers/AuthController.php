@@ -36,8 +36,9 @@ class AuthController extends Controller
         Auth::login($user);
 
 
+        $request->session()->regenerate();
 
-         return redirect()->intended('dashboard')->with('success', 'Login realizado com sucesso, ' . Auth::user()->name . '!');; // Vamos criar esta rota a seguir
+        return redirect()->route('home')->with('success', 'Bem-vindo, ' . $user->name); // Vamos criar esta rota a seguir
     }
 
     // Mostrar formulário de login
@@ -56,10 +57,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard')->with('success', ' realizado com sucesso, ' . Auth::user()->name . '!');
+           return redirect()->route('home')->with('success', 'Bem-vindo, ');
         }
 
-       return back()->withErrors(['email' => 'Credenciais inválidas.'])->with('error', 'Ops! Algo deu errado.');
+        return back()->withErrors(['email' => 'Credenciais inválidas.'])->with('error', 'Ops! Algo deu errado.');
     }
 
     public function logout(Request $request)
