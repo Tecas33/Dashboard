@@ -12,7 +12,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "livewire/volt": "^1.7.0"
+        "livewire/livewire": "^4.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -22,8 +22,7 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "pestphp/pest": "^3.8",
-        "pestphp/pest-plugin-laravel": "^3.2"
+        "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
         "psr-4": {
@@ -55,8 +54,15 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr --kill-others"
         ],
+        "lint": [
+            "pint --parallel"
+        ],
+        "test:lint": [
+            "pint --parallel --test"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
+            "@test:lint",
             "@php artisan test"
         ],
         "post-autoload-dump": [

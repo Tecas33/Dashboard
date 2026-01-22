@@ -1,41 +1,60 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\HomeController;
 
-// Rotas de Autenticação
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
-use App\Livewire\Home;
 
-//Rotas da Dashboar
-use App\Livewire\dashboard\Produtos;
-use App\Livewire\dashboard\Clientes;
-use App\Livewire\dashboard\Servicos;
-use App\Livewire\Perfil;
+// Route::get('/', function () { return view('welcome'); });
 
-Route::get('/', Login::class)->name('login');
-Route::get('/register', Register::class)->name('Register');
-Route::get('/dashboard', Home::class)->name('dashboard')->middleware('auth');
+// Rotas de Autenticação Manual
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'store'])->name('register.store');
 
+Route::get('/', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Rota do Dashboard (Protegida)
 Route::middleware(['auth'])->group(function () {
-
-
-
-       //Produtos rota
-       Route::get('/produtos', Produtos::class)->name('produtos');
-
-       //Perfil rota
-       Route::get('/perfil', Perfil::class)->name('perfil');
-
-       //Clientes Rota
-       Route::get('/clientes', Clientes::class)->name('clientes');
-
-       //Servicos Rota
-       Route::get('/servicos', Servicos::class)->name('servicos');
+    Route::get('dashboard', function () {
+        return view('dashboar');
+    })->name('dashboard');
 
 });
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('projects', ProjectController::class);
+    Route::resource('tasks', TaskController::class);
+    Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
+});
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    // Outras rotas (tarefas, projetos...)
+});
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+// Redireciona a home (/) para o dashboard se estiver logado
+// Route::get('/', function () {
+//     return redirect()->route('dashboard');
+// });
+
 Route::post('/logout', function () {
-    auth()->logout();
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
     return redirect('/');
 })->name('logout');

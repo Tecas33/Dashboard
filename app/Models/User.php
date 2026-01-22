@@ -22,7 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_id'
+        'image',
+        'telefone',
     ];
 
     /**
@@ -60,24 +61,14 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    public function produtos()
-    {
-        return $this->hasMany(Produtos::class, 'user_id');
-    }
+    public function projects()
+{
+    return $this->hasMany(Project::class);
+}
 
-    public function clientes()
-    {
-        return $this->hasMany(Clientes::class, );
-    }
 
-    public function servicos()
-    {
-        return $this->hasMany(Servicos::class, 'user_id');
-    }
-
-     public function atividades()
-    {
-        return $this->hasMany(Actividades::class, 'user_id');
-    }
-
+  public function tasks()
+{
+    return $this->hasMany(Task::class);
+}
 }
